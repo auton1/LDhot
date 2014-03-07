@@ -9,6 +9,7 @@
 #define RAN_H_
 
 #include <ctime>
+#include <cstdint>
 
 class Ran
 {
