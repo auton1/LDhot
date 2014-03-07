@@ -233,3 +233,53 @@ bool test_gof(const vector<double> &data, double k, double a)
 
 	return (A_pass && W_pass);
 }
+
+
+// Use "Fewer permutations, more accurate p-values" algorithm of Knijnenburg et al. 2009
+double find_tail_approximation_p_value(const double clk_ratio, const vector<double> &clk_ratio_distribution_in)
+{
+	double p = numeric_limits<double>::quiet_NaN();
+	double k, a;
+
+	unsigned int M=0;
+	for (unsigned int ui=0; ui<clk_ratio_distribution_in.size(); ui++)
+	{
+		if (clk_ratio < clk_ratio_distribution_in[ui])
+			M++;
+	}
+
+	if ((M < 10) && (clk_ratio_distribution_in.size() > 999))
+	{	// clk_ratio is in the extreme tails of the distribution, and have enough data to use the tail approximation
+		vector<double> clk_ratio_distribution = clk_ratio_distribution_in;	// Create local copy
+		sort(clk_ratio_distribution.begin(), clk_ratio_distribution.end());
+		vector<double> clk_distribution_tail;
+
+		bool passed_gof=false;
+		unsigned int min_idx;
+		for (min_idx = (unsigned int)(double(clk_ratio_distribution.size())*0.875);	// Define the tails
+			(min_idx < clk_ratio_distribution.size()-25);	// Require at least 25 points to estimate `.
+			min_idx += 5)
+		{
+			double min_clk = (clk_ratio_distribution[min_idx] + clk_ratio_distribution[min_idx+1])*0.5;
+
+			// Extract tail of the distribution
+			clk_distribution_tail.resize(0);
+			for (unsigned int ui=min_idx+1; ui<clk_ratio_distribution.size(); ui++)
+			{
+				if (clk_ratio_distribution[ui] > min_clk)
+					clk_distribution_tail.push_back(clk_ratio_distribution[ui] - min_clk);
+			}
+
+			gpd_ml(clk_distribution_tail, k, a);	// Estimate GPD by Maximum Likelihood
+			passed_gof = test_gof(clk_distribution_tail, k, a);	// Test Goodness of Fit
+			if (passed_gof)
+			{	// Estimate p-value
+				p = (1.0 - gp_cdf(clk_ratio-min_clk, k, a)) * clk_distribution_tail.size() / double(clk_ratio_distribution.size());
+				break;
+			}
+		}
+	}
+
+	return p;
+}
+

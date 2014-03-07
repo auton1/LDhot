@@ -376,6 +376,7 @@ void read_lk_file(const string &lk_filename, lk_table_type &lk)
 	printLOG("\tExpecting " + int2str(max_N00) + ", " + int2str(max_N01) + ", " + int2str(max_N10) + ", " + int2str(max_N11) + " of each pair-type\n");
 
 	lk.lk_table.clear();
+	//lk.lk_table.resize(0);
 
 	//lk.lk_table = vec5D(max_N00+1, vec4D(max_N01+1, vec3D(max_N10+1, vec2D(max_N11+1, vec1D(lk.N_rho, 0)))));
 
@@ -406,54 +407,6 @@ void read_lk_file(const string &lk_filename, lk_table_type &lk)
 		N_entries++;
 	}
 	printLOG("\tRead " + int2str(N_entries) + " entries\n");
-}
-
-// Use "Fewer permutations, more accurate p-values" algorithm of Knijnenburg et al. 2009
-double find_tail_approximation_p_value(const double clk_ratio, const vector<double> &clk_ratio_distribution_in)
-{
-	double p = numeric_limits<double>::quiet_NaN();
-	double k, a;
-
-	unsigned int M=0;
-	for (unsigned int ui=0; ui<clk_ratio_distribution_in.size(); ui++)
-	{
-		if (clk_ratio < clk_ratio_distribution_in[ui])
-			M++;
-	}
-
-	if ((M < 10) && (clk_ratio_distribution_in.size() > 999))
-	{	// clk_ratio is in the extreme tails of the distribution, and have enough data to use the tail approximation
-		vector<double> clk_ratio_distribution = clk_ratio_distribution_in;	// Create local copy
-		sort(clk_ratio_distribution.begin(), clk_ratio_distribution.end());
-		vector<double> clk_distribution_tail;
-
-		bool passed_gof=false;
-		unsigned int min_idx;
-		for (min_idx = (unsigned int)(double(clk_ratio_distribution.size())*0.875);	// Define the tails
-			(min_idx < clk_ratio_distribution.size()-25);	// Require at least 25 points to estimate GPD.
-			min_idx += 5)
-		{
-			double min_clk = (clk_ratio_distribution[min_idx] + clk_ratio_distribution[min_idx+1])*0.5;
-
-			// Extract tail of the distribution
-			clk_distribution_tail.resize(0);
-			for (unsigned int ui=min_idx+1; ui<clk_ratio_distribution.size(); ui++)
-			{
-				if (clk_ratio_distribution[ui] > min_clk)
-					clk_distribution_tail.push_back(clk_ratio_distribution[ui] - min_clk);
-			}
-
-			gpd_ml(clk_distribution_tail, k, a);	// Estimate GPD by Maximum Likelihood
-			passed_gof = test_gof(clk_distribution_tail, k, a);	// Test Goodness of Fit
-			if (passed_gof)
-			{	// Estimate p-value
-				p = (1.0 - gp_cdf(clk_ratio-min_clk, k, a)) * clk_distribution_tail.size() / double(clk_ratio_distribution.size());
-				break;
-			}
-		}
-	}
-
-	return p;
 }
 
 class model

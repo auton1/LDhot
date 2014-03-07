@@ -19,6 +19,9 @@
 #include "tools.h"
 #include "sim.h"
 #include "Ran.h"
+#include "gpd_fit.h"
+
+//#include <omp.h>
 
 using namespace std;
 

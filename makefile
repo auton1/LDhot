@@ -11,8 +11,8 @@ all: my_ldhot my_ldhot_summary
 my_ldhot: my_ldhot.cpp sim.cpp tools.cpp parameters.cpp output_log.cpp gpd_fit.cpp
 	$(CPP) $(CPPFLAGS) my_ldhot.cpp parameters.cpp output_log.cpp tools.cpp sim.cpp gpd_fit.cpp -o my_ldhot
 
-my_ldhot_summary: summary.cpp tools.cpp output_log.cpp gpd_fit.cpp
-	$(CPP) $(CPPFLAGS) summary.cpp tools.cpp output_log.cpp gpd_fit.cpp -o my_ldhot_summary
+my_ldhot_summary: summary.cpp tools.cpp output_log.cpp 
+	$(CPP) $(CPPFLAGS) summary.cpp tools.cpp output_log.cpp -o my_ldhot_summary
 	
 clean:
 	rm -rf *.o

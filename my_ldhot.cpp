@@ -103,6 +103,11 @@ int main(int argc, char *argv[])
 	printLOG("Attempting to detect hotspots between " + dbl2str(startpos,3) + "kb and " + dbl2str(endpos,3) + "kb\n");
 
 	const int sim_block_size = 50;
+	//#ifdef _OPENMP
+			//int n_threads = omp_get_max_threads();
+			//const int split = (sim_block_size / n_threads) * 2;
+			//const int split = 250;
+	//#endif
 
 	for (double pos=startpos; pos<endpos; pos+=params.pos_step)
 	{
@@ -188,7 +193,7 @@ int main(int argc, char *argv[])
 		// Calculate likelihood ratio
 		double data_clk_ratio = data_clk_hotspot - data_clk_constant;
 		//printLOG("dCLK=" + dbl2str(data_clk_ratio,3) + " ");
-		printLOG("Hot=" + dbl2str(mle_rate_hotspot,3) + ", bg=" + dbl2str(mle_rate_background,3) + " vs bg=" + dbl2str(mle_rate_constant,3) + " dclk=" + dbl2str(data_clk_ratio, 3) + "\n");
+		printLOG("Hot=" + dbl2str(mle_rate_hotspot,3) + ", bg=" + dbl2str(mle_rate_background,3) + " vs bg=" + dbl2str(mle_rate_constant,3) + " dclk=" + dbl2str(data_clk_ratio, 4) + "\n");
 
 		unsigned int N_sims_used = 0;
 		double p_value = 1.0;
@@ -217,7 +222,7 @@ int main(int argc, char *argv[])
 
 			// We're going submit simulations in batches of 50, with multithreading. In order to ensure things
 			// remain deterministic, we're going to generate the random numbers/seeds we need ahead of time.
-			// Update: Multithreading actually slowed things down as it appears to be bus limited :-(
+			// Update: Multithreading breaks in OS X... :-(
 			clk_ratio_distribution.resize(sim_num+sim_block_size);
 			vector<int> random_seeds(sim_block_size);	// Choose random seeds for the various threads
 			vector<double> sim_rate(sim_block_size);
@@ -235,6 +240,7 @@ int main(int argc, char *argv[])
 				//sim_rate[ui] = rangen.ran_double()*100;	// Uniform
 			}
 
+//#pragma omp parallel for schedule(dynamic, split)
 			for (int sub_sim=0; sub_sim<sim_block_size; sub_sim++)
 			{
 				// Generate null recombination map.
@@ -286,9 +292,13 @@ int main(int argc, char *argv[])
 		double sim_time = double(sim_end - sim_start)/CLOCKS_PER_SEC;
 
 		N_lt_truth = 0;
+		double max_clk_ratio = -numeric_limits<double>::max();
 		for (unsigned int ui=0; ui<clk_ratio_distribution.size(); ui++)
+		{
+			max_clk_ratio = max(max_clk_ratio, clk_ratio_distribution[ui]);
 			if (data_clk_ratio <= clk_ratio_distribution[ui])
 				N_lt_truth++;
+		}
 		N_sims_used = clk_ratio_distribution.size();
 
 		p_value = double(N_lt_truth+1)/(N_sims_used+1);
@@ -296,6 +306,7 @@ int main(int argc, char *argv[])
 		printLOG("\tp = " + dbl2str(p_value,4) + " (" + int2str(N_lt_truth) + "/" + int2str(N_sims_used) + ")");
 		if (p_value_approx == p_value_approx)	// i.e. isn't NaN.
 			printLOG(" p_tail_approx = " + dbl2str(p_value_approx,5));
+		printLOG(" max_sim_dlk = " + dbl2str(max_clk_ratio, 4));
 
 		output_result(out, lh_hotspot_pos, rh_hotspot_pos, mle_rate_hotspot,
 				lh_window_pos, rh_window_pos, mle_rate_background, mle_rate_constant,

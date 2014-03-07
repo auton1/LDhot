@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "output_log.h"
-#include "gpd_fit.h"
 
 using namespace std;
 
@@ -28,6 +27,14 @@ typedef map<unsigned int, vec1D> vec2D;
 typedef map<unsigned int, vec2D> vec3D;
 typedef map<unsigned int, vec3D> vec4D;
 typedef map<unsigned int, vec4D> vec5D;
+
+/*
+typedef vector<double> vec1D;
+typedef vector<vector<double> >  vec2D;
+typedef vector<vector<vector<double> > > vec3D;
+typedef vector<vector<vector<vector<double> > > > vec4D;
+typedef vector<vector<vector<vector<vector<double> > > > > vec5D;
+*/
 
 class data_struct
 {
@@ -203,8 +210,6 @@ double calc_composite_likelihood_using_pair_likelihoods(const lk_table_type &lk,
 														const int start_idx, const int end_idx,
 														const vector<vector<vector<double> > > &pair_lks,
 														const int lk_SNP_window);
-
-double find_tail_approximation_p_value(const double clk_ratio, const vector<double> &clk_ratio_distribution_in);
 
 double estimate_MLE_constant_rate_across_region(const data_struct &data, const lk_table_type &lk,
 													const int lk_SNP_window, double &mle_rate);
