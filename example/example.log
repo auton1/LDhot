@@ -1,0 +1,54 @@
+
+myLDhot - v0.3
+(C) Adam Auton 2014
+
+Parameters as interpreted:
+	--seq example-sim.seq
+	--loc example-sim.loc
+	--lk lk_n20_t0.001
+	--res example-res.txt
+	--out example
+	--nsim 1000
+	--seed 1
+
+Reading Loci File: example-sim.loc
+	Read 289 sites
+Reading Sequence File:example-sim.seq
+	Read 289 sites
+	Read 20 haplotypes
+Reading res: example-res.txt
+	Read 289 map positions
+	Map Covers positions 0.2 - 99.56 kb
+	Map Length = 94.6 4Ner
+Reading lk file: lk_n20_t0.001
+	Expecting 100 rho entries
+	Expecting 275 lk entries
+	Expecting 20, 10, 10, 10 of each pair-type
+	Read 275 entries
+Attempting to detect hotspots between 0.2kb and 99.9kb
+Hotspot: 0.200-1.700kb  BG: 0.200-50.200kb (160 sites, rate=1.37) 
+	Too near boundary.
+Hotspot: 0.200-2.700kb  BG: 0.200-51.200kb (162 sites, rate=1.82) 
+	Too near boundary.
+Hotspot: 45.700-48.700kb  BG: 0.200-97.200kb (278 sites, rate=0.963) Hot=12.2, bg=0 vs bg=0.125 dclk=2.05e+03
+	p = 0.000999 (0/1000) p_tail_approx = 5.47e-08  11.22 simulations/sec
+Hotspot: 46.700-49.700kb  BG: 0.200-98.200kb (281 sites, rate=0.954) Hot=14.9, bg=0 vs bg=0.124 dclk=3.28e+03
+	p = 0.000999 (0/1000) p_tail_approx = 0.00030984  10.90 simulations/sec
+Hotspot: 47.700-50.700kb  BG: 0.200-99.200kb (285 sites, rate=0.954) Hot=27.2, bg=0 vs bg=0.121 dclk=4.43e+03
+	p = 0.000999 (0/1000) p_tail_approx = 2.165e-07  10.66 simulations/sec
+Hotspot: 48.700-51.700kb  BG: 0.200-99.920kb (287 sites, rate=0.949) Hot=24.8, bg=0 vs bg=0.121 dclk=4.77e+03
+	p = 0.000999 (0/1000) p_tail_approx = 0  10.43 simulations/sec
+Hotspot: 49.700-52.700kb  BG: 1.200-99.920kb (286 sites, rate=0.959) Hot=17, bg=0 vs bg=0.121 dclk=3.62e+03
+	p = 0.000999 (0/1000) p_tail_approx = 1.1946e-05  10.51 simulations/sec
+Hotspot: 50.700-53.700kb  BG: 2.200-99.920kb (282 sites, rate=0.968) Hot=17.7, bg=0 vs bg=0.122 dclk=2.65e+03
+	p = 0.000999 (0/1000) p_tail_approx = 0.00014095  11.06 simulations/sec
+Hotspot: 94.700-97.700kb  BG: 46.200-99.920kb (143 sites, rate=1.76) 
+	Too near boundary.
+Hotspot: 95.700-98.700kb  BG: 47.200-99.920kb (139 sites, rate=1.79) 
+	Too near boundary.
+Hotspot: 96.700-99.700kb  BG: 48.200-99.920kb (136 sites, rate=1.83) 
+	Too near boundary.
+Hotspot: 97.700-99.920kb  BG: 49.200-99.920kb (131 sites, rate=1.33) 
+	Too near boundary.
+Run Time = 558.00 seconds
+Done.

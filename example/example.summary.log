@@ -1,0 +1,20 @@
+
+myLDhot summary
+(C) Adam Auton 2014
+
+Parameters as interpreted:
+	--res example-res.txt
+	--hot example
+	--out example
+	--sig 0.001
+	--frac 0.1
+
+Reading res: example-res.txt
+	Read 289 map positions
+	Map Covers positions 0.2 - 99.56 kb
+	Map Length = 94.6 4Ner
+Reading example.hotspots.txt
+Read 6 hotspot windows.
+Writing 1 hotspots.
+Run Time = 0.00 seconds
+Done.
