@@ -3,16 +3,16 @@ my_ldhot
 
 Detect recombination hotspots using population genetic data.
 
-Installation
-============
+#Installation
 
 After downloading, switch to the download folder and type 'make'.
 
-Usage
-=====
+#Usage
 
+'''
 ./my_ldhot --seq <seq_file> --loc <loc_file> --lk <lk_file> --res <res_file> --nsim 1000 --out <output_prefix>
 ./my_ldhot_summary --res <res_file> --hot <hotspot_file> --out <output_prefix>
+'''
 
 The seq_file, loc_file, lk_file, and res_file are all derived from LDhat.
 
