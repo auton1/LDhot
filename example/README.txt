@@ -1,4 +1,6 @@
-# An example of running LDhat and LDhot.
+# This folder contains an example of running LDhat and my_ldhot. It also contains a tarball 
+# of simulations used to measure the power and false positive rate of my_ldhot.
+#
 # The following document lists the steps used to generate the example output shown in this folder.
 # Note that these steps can be run using the run_example.pl perl script.
 #
