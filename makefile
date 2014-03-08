@@ -1,8 +1,17 @@
 # Make file for my_ldhot
 # Author: Adam Auton
 
+# Flag used to turn on multi-threading
+ifndef MULTI
+    MULTI = 0
+endif
+
 CPP = g++
-CPPFLAGS = -Wall -Wextra -Ofast -m64 -mtune=native 
+#CPP = g++-mp-4.8
+CPPFLAGS = -Wall -Wextra -Ofast -m64 -mtune=native -std=c++11 
+ifeq ($(MULTI), 1)
+    CPPFLAGS += -fopenmp
+endif
 #CPPFLAGS = -Wall -Wextra -m64 -O3 
 #CPPFLAGS = -g
 

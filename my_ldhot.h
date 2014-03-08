@@ -21,7 +21,10 @@
 #include "Ran.h"
 #include "gpd_fit.h"
 
-//#include <omp.h>
+#ifdef _OPENMP
+	#include <omp.h>
+#endif
+
 
 using namespace std;
 

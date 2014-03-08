@@ -10,6 +10,11 @@ After downloading, switch to the download folder and type:
 make
 ```
 
+On some systems, you can compile with multi-threading turned on. To do this, type:
+```
+make MULTI=1
+```
+
 #Usage
 
 Two programs are provided. They are called as follows.

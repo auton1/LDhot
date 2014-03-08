@@ -8,6 +8,7 @@
 #ifndef TOOLS_H_
 #define TOOLS_H_
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <limits>

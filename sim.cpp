@@ -393,7 +393,7 @@ void sim::make_tree()
 {
 	int k, i, j;
 	nrec=0, nco=0;
-	double rr, avR, t=0, told;
+	double rr, avR, t=0;//, told;
 	node_list **list, *new_node_list;
 	list = (node_list **) malloc((size_t)((con.nsamp+1)*sizeof(node_list *)));
 	for (i=1;i<=con.nsamp;i++)
@@ -422,7 +422,7 @@ void sim::make_tree()
 
 		avR = (double) rr/k;
 	/*Choose time for next event*/
-		told=t;
+		//told=t;
 		choose_time(&t, k, avR);
 	/*Choose type of next event: update list and tree accordingly*/
 		if (rangen.ran_double() < (double) avR/(avR+(k-1)))

@@ -103,11 +103,6 @@ int main(int argc, char *argv[])
 	printLOG("Attempting to detect hotspots between " + dbl2str(startpos,3) + "kb and " + dbl2str(endpos,3) + "kb\n");
 
 	const int sim_block_size = 50;
-	//#ifdef _OPENMP
-			//int n_threads = omp_get_max_threads();
-			//const int split = (sim_block_size / n_threads) * 2;
-			//const int split = 250;
-	//#endif
 
 	for (double pos=startpos; pos<endpos; pos+=params.pos_step)
 	{
@@ -214,7 +209,7 @@ int main(int argc, char *argv[])
 		clk_ratio_distribution.reserve(params.N_sims);
 
 		unsigned int N_lt_truth = 0;
-		clock_t sim_start = clock();
+		time_t sim_start; time(&sim_start);
 		for (int sim_num=0; sim_num < params.N_sims; sim_num+=sim_block_size)
 		{
 			// We are going simulate data with a constant rate, but with rate drawn from exponential distribution
@@ -240,7 +235,10 @@ int main(int argc, char *argv[])
 				//sim_rate[ui] = rangen.ran_double()*100;	// Uniform
 			}
 
-//#pragma omp parallel for schedule(dynamic, split)
+// Use multithreading if you can
+#ifdef _OPENMP
+#pragma omp parallel for schedule(static)
+#endif
 			for (int sub_sim=0; sub_sim<sim_block_size; sub_sim++)
 			{
 				// Generate null recombination map.
@@ -279,8 +277,10 @@ int main(int argc, char *argv[])
 
 			N_lt_truth = 0;
 			for (unsigned int ui=0; ui<clk_ratio_distribution.size(); ui++)
+			{
 				if (data_clk_ratio <= clk_ratio_distribution[ui])
 					N_lt_truth++;
+			}
 			N_sims_used = clk_ratio_distribution.size();
 
 			p_value = double(N_lt_truth+2.7)/(N_sims_used+5.4);	// Adjusted Wald interval (Agresti and Coull, 1998)
@@ -288,8 +288,8 @@ int main(int argc, char *argv[])
 			if ((p_value - ci) > 0.01)
 				break;	// Don't bother carrying on - very unlikely to find anything significant.
 		}
-		clock_t sim_end = clock();
-		double sim_time = double(sim_end - sim_start)/CLOCKS_PER_SEC;
+		time_t sim_end; time(&sim_end);
+		double sim_time = difftime(sim_end, sim_start);
 
 		N_lt_truth = 0;
 		double max_clk_ratio = -numeric_limits<double>::max();
@@ -302,6 +302,8 @@ int main(int argc, char *argv[])
 		N_sims_used = clk_ratio_distribution.size();
 
 		p_value = double(N_lt_truth+1)/(N_sims_used+1);
+		//if (data_clk_ratio / max_clk_ratio > 10)
+		//	p_value = 0;
 		p_value_approx = find_tail_approximation_p_value(data_clk_ratio, clk_ratio_distribution);
 		printLOG("\tp = " + dbl2str(p_value,4) + " (" + int2str(N_lt_truth) + "/" + int2str(N_sims_used) + ")");
 		if (p_value_approx == p_value_approx)	// i.e. isn't NaN.
