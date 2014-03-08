@@ -10,10 +10,13 @@ After downloading, switch to the download folder and type:
 make
 ```
 
-On some systems, you can compile with multi-threading turned on. To do this, type:
+If you're lucky, this will compile without errors. However, note you may need a compiler that supports the C++11 standard. If you see lots of errors, you may need to upgrade your compiler.
+
+On some systems, you can compile with multi-threading turned on, which results in a signficant reduction in runtime. To do this, type:
 ```
 make MULTI=1
 ```
+
 
 #Usage
 
