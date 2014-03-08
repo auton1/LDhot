@@ -103,6 +103,10 @@ int main(int argc, char *argv[])
 	printLOG("Attempting to detect hotspots between " + dbl2str(startpos,3) + "kb and " + dbl2str(endpos,3) + "kb\n");
 
 	const int sim_block_size = 50;
+#ifdef _OPENMP
+	int n_threads = omp_get_max_threads();
+	omp_set_num_threads(n_threads);
+#endif
 
 	for (double pos=startpos; pos<endpos; pos+=params.pos_step)
 	{
