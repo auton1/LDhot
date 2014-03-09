@@ -8,11 +8,11 @@ endif
 
 CPP = g++
 #CPP = g++-mp-4.8
-CPPFLAGS = -Wall -Wextra -Ofast -m64 -mtune=native -std=c++11 
+CPPFLAGS = -Wall -Wextra -O2 -m64 -mtune=native -std=c++11 
 ifeq ($(MULTI), 1)
     CPPFLAGS += -fopenmp
 endif
-#CPPFLAGS = -Wall -Wextra -m64 -O3 
+#CPPFLAGS = -Wall -Wextra -m64 -O2 
 #CPPFLAGS = -g
 
 all: my_ldhot my_ldhot_summary
