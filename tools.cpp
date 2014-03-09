@@ -14,25 +14,27 @@ void get_pair_likelihoods(const data_struct &data, const lk_table_type &lk,
 {
 	const unsigned int N_seq = data.seqs.size();
 	int N_sites = end_idx - start_idx;
+	unsigned int N[2][2];
+	unsigned int a, b, c, d, N_types;
+	int j_min, j_max, fl;
+
 	pair_lks.resize(N_sites);
 	for (int i=0; i<N_sites; i++)
 		pair_lks[i].resize(N_sites);
 
 	for (int i=start_idx; i<end_idx; i++)
 	{
-		int j_min = max(i-lk_SNP_window, 0);
-		int j_max = min(i+lk_SNP_window+1, end_idx);
+		j_min = max(i-lk_SNP_window, 0);
+		j_max = min(i+lk_SNP_window+1, end_idx);
 		for (int j=j_min; j<j_max; j++)
 		{
 			if (i==j)
 				continue;
-			unsigned int N[2][2];
 			N[0][0] = 0; N[0][1] = 0; N[1][0] = 0; N[1][1] = 0;
 			for (unsigned int s=0; s<N_seq; ++s)
 			{	// This is the major performance bottleneck...
 				N[ data.seqs[s][i] ][ data.seqs[s][j] ]++;
 			}
-			unsigned int a, b, c, d;
 			a=N[0][0],b=N[1][0],c=N[0][1],d=N[1][1];
 
 			// pt and type (haploid)
@@ -41,7 +43,7 @@ void get_pair_likelihoods(const data_struct &data, const lk_table_type &lk,
 			// 01: 2 = c
 			// 11: 3 = d
 
-			unsigned int N_types = (a>0)+(b>0)+(c>0)+(d>0);
+			N_types = (a>0)+(b>0)+(c>0)+(d>0);
 			if (N_types == 1)
 				continue;
 
@@ -55,7 +57,7 @@ void get_pair_likelihoods(const data_struct &data, const lk_table_type &lk,
 				if ((N[1][1] > 0) && (N[1][1] != a)) d=N[1][1];
 			}
 
-			int fl=0;
+			fl=0;
 			if (2*(b+d) > data.N_seq) fl += 2; //if (2*(pt[1]+pt[3]) > nseq) fl += 2;
 			if (2*(c+d) > data.N_seq) fl += 1; //if (2*(pt[2]+pt[3]) > nseq) fl += 1;
 			switch(fl)
@@ -101,17 +103,17 @@ double calc_composite_likelihood_using_pair_likelihoods(const lk_table_type &lk,
 	double clk=0.0;
 	const int N_rho_minus_1 = lk.N_rho-1;
 	const double multiplier = N_rho_minus_1 / lk.lk_rho_max;
+	int j_min, j_max, j_mid;
+	double rmap_i, rho_dist;
+	int rho_idx, rho_idx2;
+	double y1, dx, rho_idx_point;
 
 	for (int i=start_idx; i<end_idx; ++i)
 	{
-		int j_min = max(i-lk_SNP_window, 0);
-		int j_max = min(i+lk_SNP_window+1, end_idx);
-		int j_mid = min(max(j_min, i), j_max);
-		double rmap_i = rmap[i];
-
-		double rho_dist;
-		int rho_idx, rho_idx2;
-		double y1, dx, rho_idx_point;
+		j_min = max(i-lk_SNP_window, 0);
+		j_max = min(i+lk_SNP_window+1, end_idx);
+		j_mid = min(max(j_min, i), j_max);
+		rmap_i = rmap[i];
 
 		// Left of i
 		for (int j=j_min; j<j_mid; ++j)
