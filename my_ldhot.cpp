@@ -105,7 +105,9 @@ int main(int argc, char *argv[])
 	const int sim_block_size = 50;
 #ifdef _OPENMP
 	int n_threads = omp_get_max_threads();
-	omp_set_num_threads(n_threads);
+	printLOG("Using multithreading with a maximum of " + int2str(n_threads) + " threads.\n");
+	// Can set the number of threads here, but probably better to let openMP figure it out.
+	//omp_set_num_threads(n_threads);
 #endif
 
 	for (double pos=startpos; pos<endpos; pos+=params.pos_step)
@@ -191,7 +193,6 @@ int main(int argc, char *argv[])
 				mle_rate_background, mle_rate_hotspot);
 		// Calculate likelihood ratio
 		double data_clk_ratio = data_clk_hotspot - data_clk_constant;
-		//printLOG("dCLK=" + dbl2str(data_clk_ratio,3) + " ");
 		printLOG("Hot=" + dbl2str(mle_rate_hotspot,3) + ", bg=" + dbl2str(mle_rate_background,3) + " vs bg=" + dbl2str(mle_rate_constant,3) + " dclk=" + dbl2str(data_clk_ratio, 4) + "\n");
 
 		unsigned int N_sims_used = 0;
@@ -306,8 +307,6 @@ int main(int argc, char *argv[])
 		N_sims_used = clk_ratio_distribution.size();
 
 		p_value = double(N_lt_truth+1)/(N_sims_used+1);
-		//if (data_clk_ratio / max_clk_ratio > 10)
-		//	p_value = 0;
 		p_value_approx = find_tail_approximation_p_value(data_clk_ratio, clk_ratio_distribution);
 		printLOG("\tp = " + dbl2str(p_value,4) + " (" + int2str(N_lt_truth) + "/" + int2str(N_sims_used) + ")");
 		if (p_value_approx == p_value_approx)	// i.e. isn't NaN.
