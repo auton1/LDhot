@@ -20,7 +20,7 @@ void print_help()
 	cout << endl;
 	cout << "Other Parameters: " << endl;
 	cout << "--sig <double>" << endl;
-	cout << "--frac <double> " << endl;
+	cout << "--sigjoin <double> " << endl;
 	cout << endl;
 	exit(0);
 }
@@ -36,17 +36,17 @@ int main(int argc, char *argv[])
 	int i=1;
 	string in_str;
 	string res_filename="", hot_filename="", output_prefix = "out";
-	double sig = 0.001;
-	double frac = 0.1;
+	double sig_major = 0.001;
+	double sig_minor = 0.001;
 	while (i<argc)
 	{
 		in_str = argv[i];
 		if (in_str ==  "--res") { res_filename = string(argv[i+1]); i++; }
 		else if (in_str ==  "--hot") { hot_filename = string(argv[i+1]); i++; }
 		else if (in_str ==  "--out") { output_prefix = string(argv[i+1]); i++; }
-		else if (in_str ==  "--sig") { sig = atof(argv[i+1]); i++; }
-		else if (in_str ==  "--frac") { frac = atof(argv[i+1]); i++; }
-		else if ((in_str == "-?") || (in_str == "-h")) print_help();
+		else if (in_str ==  "--sig") { sig_major = atof(argv[i+1]); i++; }
+		else if (in_str ==  "--sigjoin") { sig_minor = atof(argv[i+1]); i++; }
+		else if ((in_str == "-?") || (in_str == "-h") || (in_str == "--?") || (in_str == "--help")) print_help();
 		else
 			error("Unknown option: " + string(in_str), 0);
 		i++;
@@ -65,8 +65,8 @@ int main(int argc, char *argv[])
 	printLOG("\t--res " + res_filename + "\n");
 	printLOG("\t--hot " + output_prefix + "\n");
 	printLOG("\t--out " + output_prefix + "\n");
-	printLOG("\t--sig " + dbl2str(sig, 3) + "\n");
-	printLOG("\t--frac " + dbl2str(frac, 3) + "\n");
+	printLOG("\t--sig " + dbl2str(sig_major, 3) + "\n");
+	printLOG("\t--sigjoin " + dbl2str(sig_minor, 3) + "\n");
 	printLOG("\n");
 
 	vector<double> rmap;
@@ -102,12 +102,25 @@ int main(int argc, char *argv[])
 		vector<double> hotspot;
 		hotspot.push_back(pos1);
 		hotspot.push_back(pos2);
-		p = min(P_ecdf, P_tail_approx);
-		hotspot.push_back(P_ecdf);
+		p = P_ecdf;
+		if (!(P_tail_approx != P_tail_approx))
+			p = P_tail_approx;
+		hotspot.push_back(p);
 		hotspots.push_back(hotspot);
 	}
 
 	printLOG("Read " + int2str(hotspots.size()) + " hotspot windows.\n");
+
+	// Only keep windows that achieve sig minor
+	vector<vector<double> > new_hotspots;
+	new_hotspots.resize(0);
+	new_hotspots.reserve(hotspots.size());
+	for (unsigned int ui=0; ui<hotspots.size(); ui++)
+	{
+		if (hotspots[ui][2] < sig_minor)
+			new_hotspots.push_back(hotspots[ui]);
+	}
+	hotspots = new_hotspots;
 
 	// Combine adjacent windows
 	bool change=true;
@@ -129,7 +142,6 @@ int main(int argc, char *argv[])
 					hotspots[ui][0] = min(pos1, hotspots[uj][0]);
 					hotspots[ui][1] = max(pos2, hotspots[uj][1]);
 					hotspots[ui][2] = min(p, hotspots[uj][2]);
-					hotspots[uj] = hotspots[ui];
 					change = true;
 				}
 			}
@@ -141,35 +153,26 @@ int main(int argc, char *argv[])
 		hotspots.resize( std::distance(hotspots.begin(),it) );
 	}
 
-	// Remove hotspots that aren't significant
-	vector<vector<double> > new_hotspots;
+	// Remove hotspots that aren't significant at main threshold
+	new_hotspots.resize(0);
 	new_hotspots.reserve(hotspots.size());
 	for (unsigned int ui=0; ui<hotspots.size(); ui++)
 	{
-		if (hotspots[ui][2] < sig)
+		if (hotspots[ui][2] < sig_major)
 			new_hotspots.push_back(hotspots[ui]);
 	}
 	hotspots = new_hotspots;
 
-	// Find the width of each hotspot
+	// Expand out to nearest SNP
 	for (unsigned int ui=0; ui<hotspots.size(); ui++)
 	{
-		// Find peak rate in each hotspot
-		double max_rate = -1;
-		for (unsigned int uj=0; uj<(rmap_pos.size()-1); uj++)
-		{
-			if ((rmap_pos[uj] >= hotspots[ui][0]) && (rmap_pos[uj] < hotspots[ui][1]))
-			{
-				max_rate = max(max_rate, rmap_rate[uj]);
-			}
-		}
 		// Find the positions where the rate drops to a fraction of the peak rate
 		unsigned int lh_idx = 0, rh_idx = 0;
 		for (unsigned int uj=0; uj<(rmap_pos.size()-1); uj++)
 		{
-			if ((rmap_rate[uj] <= (max_rate * frac)) && (rmap_pos[uj] <= hotspots[ui][0]))
+			if (rmap_pos[uj] <= hotspots[ui][0])
 				lh_idx = uj;
-			if ((rmap_rate[uj] <= (max_rate * frac)) && (rmap_pos[uj] >= hotspots[ui][1]))
+			if (rmap_pos[uj] >= hotspots[ui][1])
 			{
 				rh_idx = uj;
 				break;
@@ -212,12 +215,48 @@ int main(int argc, char *argv[])
 		hotspots.resize( std::distance(hotspots.begin(),it) );
 	}
 
+	// Estimate mass across hotspots
+	vector<double> mass(hotspots.size(), 0);
+	vector<double> peak_rate(hotspots.size(), 0);
+	for (unsigned int ui=0; ui<hotspots.size(); ui++)
+	{
+		// Find peak rate in each hotspot
+		unsigned int idx1 = 0, idx2 = 0;
+		for (unsigned int uj=0; uj<(rmap_pos.size()-1); uj++)
+		{
+			if ((rmap_pos[uj] >= hotspots[ui][0]) && (rmap_pos[uj] < hotspots[ui][1]))
+				peak_rate[ui] = max(peak_rate[ui], rmap_rate[uj]);
+
+			if (rmap_pos[uj] <= hotspots[ui][0])
+				idx1 = uj;
+			if (rmap_pos[uj] <= hotspots[ui][1])
+				idx2 = uj;
+			else
+				break;
+		}
+
+		double rmap_lhs = rmap[idx1], rmap_rhs = rmap[idx2];
+		double dx = rmap_pos[idx1+1] - rmap_pos[idx1], dy=0;
+		if (dx > 0)
+		{
+			dy = rmap[idx1+1] - rmap[idx1];
+			rmap_lhs += (hotspots[ui][0] - rmap_pos[idx1]) * dy / dx;
+		}
+		dx = rmap_pos[idx2+1] - rmap_pos[idx2];
+		if (dx > 0)
+		{
+			dy = rmap[idx2+1] - rmap[idx2];
+			rmap_rhs += (hotspots[ui][1] - rmap_pos[idx2]) * dy / dx;
+		}
+		mass[ui] = rmap_rhs - rmap_lhs;
+	}
+
 	printLOG("Writing " + int2str(hotspots.size()) + " hotspots.\n");
 
 	ofstream out((output_prefix + ".hot_summary.txt").c_str());
-	out << "#hotStart\thotEnd\tp" << endl;
+	out << "#hotStart\thotEnd\tp\trho_across_hotspot\tpeak_rate" << endl;
 	for (unsigned int ui=0; ui<hotspots.size(); ui++)
-		out << hotspots[ui][0] << "\t" << hotspots[ui][1] << "\t" << hotspots[ui][2] << endl;
+		out << hotspots[ui][0] << "\t" << hotspots[ui][1] << "\t" << hotspots[ui][2] << "\t" << mass[ui] << "\t" << peak_rate[ui] << endl;
 	out.close();
 
 	time(&end);
