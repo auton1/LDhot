@@ -23,10 +23,10 @@ make MULTI=1
 Two programs are provided. They are called as follows.
 
 ```
-./my_ldhot --seq <seq_file> --loc <loc_file> --lk <lk_file> --res <res_file> --nsim 1000 --out <output_prefix>
-./my_ldhot_summary --res <res_file> --hot <hotspot_file> --out <output_prefix>
+./ldhot --seq <seq_file> --loc <loc_file> --lk <lk_file> --res <res_file> --nsim 1000 --out <output_prefix>
+./ldhot_summary --res <res_file> --hot <hotspot_file> --out <output_prefix>
 ```
 
-The seq_file, loc_file, lk_file, and res_file are all derived from LDhat. The --nsim parameter controls the number of simulations used within the method, with at least 1000 being recommended.
+The seq\_file, loc\_file, lk\_file, and res\_file are all derived from LDhat (http://ldhat.sourceforge.net/). The --nsim parameter controls the number of simulations used within the method, with at least 1000 being recommended.
 
-my_ldhot produces an output file of the form \<output_prefix\>.hotspots.txt. This file contains the details of the windows tested for the presence of a hotspot. This file can be treated as the final product, or further summarized using the my_ldhot_summary program. This program uses the output of my_ldhot in conjunction with the recombination rate estimates to find hotspot boundaries. The output of this program can be found in \<output_prefix\>.hot_summary.txt.
+The ldhot program produces an output file of the form \<output\_prefix\>.hotspots.txt. This file contains the details of the windows tested for the presence of a hotspot. This file can be treated as the final product, or further summarized using the ldhot\_summary program. This program uses the output of ldhot in conjunction with the recombination rate estimates to find hotspot boundaries. The output of this program can be found in \<output\_prefix\>.hot\_summary.txt.
