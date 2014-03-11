@@ -1,5 +1,5 @@
-my_ldhot
-========
+LDhot
+=====
 
 Detect recombination hotspots using population genetic data.
 
