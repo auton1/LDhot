@@ -1,5 +1,4 @@
-# This folder contains an example of running LDhat and my_ldhot. It also contains a tarball 
-# of simulations used to measure the power and false positive rate of my_ldhot.
+# This folder contains an example of running LDhat and LDhot. 
 #
 # The following document lists the steps used to generate the example output shown in this folder.
 # Note that these steps can be run using the run_example.pl perl script.
@@ -22,13 +21,13 @@
 #
 rm example-rates.txt
 #
-# Step 5. Run my_ldhot
+# Step 5. Run LDhot
 #
-/ldhot_path/my_ldhot --seq example-sim.seq --loc example-sim.loc --lk lk_n20_t0.001 --res example-res.txt --nsim 1000 --seed 1 --out example
+/ldhot_path/ldhot --seq example-sim.seq --loc example-sim.loc --lk lk_n20_t0.001 --res example-res.txt --nsim 1000 --seed 1 --out example
 #
-# Step 6. Summarize the my_lhot_output
+# Step 6. Summarize the ldhot output
 #
-/ldhot_path/my_ldhot_summary --res example-res.txt --hot example.hotspots.txt --out example
+/ldhot_path/ldhot_summary --res example-res.txt --hot example.hotspots.txt --out example
 #
 # Done!
 #
