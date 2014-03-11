@@ -1,11 +1,11 @@
 /*
- * my_ldhot.cpp
+ * ldhot.cpp
  *
  *  Created on: Apr 16, 2010
  *      Author: Adam Auton
  */
 
-#include "my_ldhot.h"
+#include "ldhot.h"
 
 // Output results data to file
 void output_result(ofstream &out, double lh_hotspot_pos, double rh_hotspot_pos,
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
 	LOG.open((params.output_prefix + ".log").c_str());
 
-	printLOG("\nmyLDhot - " + LDHOT_VERSION + "\n");
+	printLOG("\nLDhot - " + LDHOT_VERSION + "\n");
 	printLOG("(C) Adam Auton 2014\n\n");
 
 	params.print_params();
@@ -105,9 +105,12 @@ int main(int argc, char *argv[])
 	const int sim_block_size = 50;
 #ifdef _OPENMP
 	int n_threads = omp_get_max_threads();
+	if (params.n_threads > 0)
+	{
+		n_threads = min(n_threads, params.n_threads);
+		omp_set_num_threads(n_threads);
+	}
 	printLOG("Using multithreading with a maximum of " + int2str(n_threads) + " threads.\n");
-	// Can set the number of threads here, but probably better to let openMP figure it out.
-	//omp_set_num_threads(n_threads);
 #endif
 
 	for (double pos=startpos; pos<endpos; pos+=params.pos_step)

@@ -30,6 +30,7 @@ parameters::parameters(int argc, char *argv[])
 	freq_cond = true;
 	freq_cond_model = 0;
 	lk_SNP_window = 50;
+	n_threads = -1;
 }
 
 void parameters::read_parameters()
@@ -56,6 +57,7 @@ void parameters::read_parameters()
 		else if (in_str ==  "--nofreqcond") { freq_cond = false; }
 		else if (in_str ==  "--freq-cond-model") { freq_cond = true; freq_cond_model = atoi(get_arg(i+1).c_str()); i++; }
 		else if (in_str ==  "--lk-SNP-window") { lk_SNP_window = (unsigned)atoi(get_arg(i+1).c_str()); i++; }
+		else if (in_str ==  "--nthreads") { n_threads = atoi(get_arg(i+1).c_str()); i++; }
 		else
 			error("Unknown option: " + string(in_str), 0);
 		i++;
@@ -88,6 +90,7 @@ void parameters::print_params()
 	if (freq_cond != defaults.freq_cond) printLOG("\t--nofreqcond\n");
 	if (freq_cond_model != defaults.freq_cond_model) printLOG("\t--freq-cond-model " + int2str(freq_cond_model) + "\n");
 	if (lk_SNP_window != defaults.lk_SNP_window) printLOG("\t--lk-SNP-window " + int2str(lk_SNP_window) + "\n");
+	if (n_threads != defaults.n_threads) printLOG("\t--n_threads " + int2str(n_threads) + "\n");
 	printLOG("\t--seed " + longint2str(seed) + "\n");
 	printLOG("\n");
 }
@@ -108,7 +111,7 @@ void parameters::print_help()
 		in_str = argv[i];
 		if ((in_str == "-h") || (in_str == "-?") || (in_str == "-help") || (in_str == "--?") || (in_str == "--help") || (in_str == "--h"))
 		{
-			cout << endl << "My LDhot (" << MY_LDHOT_VERSION << ")" << endl;
+			cout << endl << "LDhot (" << LDHOT_VERSION << ")" << endl;
 			cout << "\u00A9 Adam Auton 2014" << endl << endl;
 
 			cout << "Required Parameters: " << endl;
@@ -131,6 +134,9 @@ void parameters::print_help()
 			cout << "--nofreqcond" << endl;
 			cout << "--freq-cond-model <int>" << endl;
 			cout << "--lk-SNP-window <int>" << endl;
+#ifdef _OPENMP
+			cout << "--n_threads <int> " << endl;
+#endif
 			cout << endl;
 			exit(0);
 		}

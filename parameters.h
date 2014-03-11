@@ -22,7 +22,7 @@
 
 using namespace std;
 
-const string MY_LDHOT_VERSION="v0.4";
+const string LDHOT_VERSION="v0.4";
 
 class parameters
 {
@@ -39,6 +39,7 @@ public:
 	double pos_step;
 	int N_sims;
 	int seed;
+	int n_threads;
 	bool freq_cond;
 	unsigned int freq_cond_model;
 	int lk_SNP_window;

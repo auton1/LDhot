@@ -11,7 +11,7 @@
 
 void print_help()
 {
-	cout << endl << "My LDhot Summarize" << endl;
+	cout << endl << "LDhot Summary" << endl;
 	cout << "\u00A9 Adam Auton 2014" << endl << endl;
 
 	cout << "Required Parameters: " << endl;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
 	LOG.open((output_prefix + ".summary.log").c_str());
 
-	printLOG("\nmyLDhot summary\n");
+	printLOG("\nLDhot summary\n");
 	printLOG("(C) Adam Auton 2014\n\n");
 	printLOG("Parameters as interpreted:\n");
 	printLOG("\t--res " + res_filename + "\n");
