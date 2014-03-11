@@ -21,7 +21,7 @@ ldhot: ldhot.cpp sim.cpp tools.cpp parameters.cpp output_log.cpp gpd_fit.cpp
 	$(CPP) $(CPPFLAGS) ldhot.cpp parameters.cpp output_log.cpp tools.cpp sim.cpp gpd_fit.cpp -o ldhot
 
 ldhot_summary: summary.cpp tools.cpp output_log.cpp 
-	$(CPP) $(CPPFLAGS) summary.cpp tools.cpp output_log.cpp -o my_ldhot_summary
+	$(CPP) $(CPPFLAGS) summary.cpp tools.cpp output_log.cpp -o ldhot_summary
 	
 clean:
 	rm -rf *.o

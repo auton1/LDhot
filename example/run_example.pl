@@ -3,7 +3,7 @@
 $narg = $#ARGV+1;
 if ($narg < 2)
 {
-	$str = "Run my_ldhot example.\n\n\tUsage perl run_example.pl /path/to/ldhat/ /path/to/my_ldhot/\n\n";
+	$str = "Run ldhot example.\n\n\tUsage perl run_example.pl /path/to/ldhat/ /path/to/ldhot/\n\n";
 	die($str);
 }
 $ldhat_path = $ARGV[0];
@@ -26,8 +26,8 @@ $fin = $ldhat_path . "fin ";
 $interval = $ldhat_path . "interval ";
 $stat = $ldhat_path . "stat ";
 $lkgen = $ldhat_path . "lkgen ";
-$ldhot = $ldhot_path . "my_ldhot ";
-$ldhot_summary = $ldhot_path . "my_ldhot_summary ";
+$ldhot = $ldhot_path . "ldhot ";
+$ldhot_summary = $ldhot_path . "ldhot_summary ";
 
 $L = 100;
 $rmap = "fin_rmap.txt";
