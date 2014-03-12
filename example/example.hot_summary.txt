@@ -1,2 +1,2 @@
-#hotStart	hotEnd	p	rho_across_hotspot
-45.7	54.1	0.000999	93.3738
+#hotStart	hotEnd	p	rho_across_hotspot	peak_rate
+45.7	54.1	0	93.3738	41.1452

@@ -7,7 +7,7 @@ Parameters as interpreted:
 	--hot example
 	--out example
 	--sig 0.001
-	--frac 0.1
+	--sigjoin 0.01
 
 Reading res: example-res.txt
 	Read 289 map positions
