@@ -19,6 +19,7 @@ void print_help()
 	cout << "--hot <filename>" << endl;
 	cout << endl;
 	cout << "Other Parameters: " << endl;
+	cout << "--out <filename>" << endl;
 	cout << "--sig <double>" << endl;
 	cout << "--sigjoin <double> " << endl;
 	cout << endl;
