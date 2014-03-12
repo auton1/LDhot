@@ -23,7 +23,7 @@ make MULTI=1
 Two programs are provided. The main program is called as follows.
 
 ```
-./ldhot --seq <seq_file> --loc <loc_file> --lk <lk_file> --res <res_file> --nsim 1000 --out <output_prefix>
+./ldhot --seq <seq_file> --loc <loc_file> --lk <lk_file> --res <res_file> --nsim 1000 --out <out_prefix>
 ```
 
 The **seq\_file**, **loc\_file**, **lk\_file**, and **res\_file** are all derived from [**LDhat**](http://ldhat.sourceforge.net/). The --nsim parameter controls the number of simulations used within the method, with at least 1000 simulations being recommended. A complete option list is given below. 
@@ -32,7 +32,7 @@ The **ldhot** program produces an output file of the form **\<output\_prefix\>.h
 This file can be treated as the final output, or further summarized using the **ldhot\_summary** program. This is a simple program which combines windows called as significant by the main **ldhot** program. It is called as follows.
 
 ```
-./ldhot_summary --res <res_file> --hot <hotspot_file> --out <output_prefix>
+./ldhot_summary --res <res_file> --hot <hotspot_file> --out <out_prefix>
 ```
 
 The output of this program can be found in **\<output\_prefix\>.hot\_summary.txt**.
