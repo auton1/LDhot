@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 	string in_str;
 	string res_filename="", hot_filename="", output_prefix = "out";
 	double sig_major = 0.001;
-	double sig_minor = 0.001;
+	double sig_minor = 0.01;
 	while (i<argc)
 	{
 		in_str = argv[i];

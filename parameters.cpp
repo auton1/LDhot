@@ -93,6 +93,8 @@ void parameters::print_params()
 	if (n_threads != defaults.n_threads) printLOG("\t--n_threads " + int2str(n_threads) + "\n");
 	printLOG("\t--seed " + longint2str(seed) + "\n");
 	printLOG("\n");
+
+	check_parameters();
 }
 
 void parameters::print_help()
@@ -145,7 +147,10 @@ void parameters::print_help()
 
 void parameters::check_parameters()
 {
-	if (seq_filename == "") error("SEQ required.", 0);
+	if (seq_filename == "") error("Sequence file required (--seq).", 0);
+	if (lk_filename == "") error("Likelihood file required (--lk).", 0);
+	if (loc_filename == "") error("Positions file required (--loc).", 0);
+	if (res_filename == "") error("Recombination rate file required (--res).", 0);
 	if (end_pos < start_pos) error("End position must be greater than Start position.", 1);
 	if (hotspot_distance >= window_distance) error("Hotspot Size must be smaller Window Size.", 2);
 	if (pos_step < 0.001) error("Step must be greater than 0.001.", 3);

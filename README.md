@@ -37,6 +37,8 @@ This file can be treated as the final output, or further summarized using the **
 
 The output of this program can be found in **\<output\_prefix\>.hot\_summary.txt**.
 
+A more complete example of the usage of LDhat and LDhot, with both input and output files, can be found in the **example** folder.
+
 ##Option List
 
 ###ldhot
