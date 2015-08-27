@@ -26,7 +26,7 @@ Two programs are provided. The main program is called as follows.
 ./ldhot --seq <seq_file> --loc <loc_file> --lk <lk_file> --res <res_file> --nsim 1000 --out <out_prefix>
 ```
 
-The **seq\_file**, **loc\_file**, **lk\_file**, and **res\_file** are all derived from [**LDhat**](http://ldhat.sourceforge.net/). The --nsim parameter controls the number of simulations used within the method, with at least 1000 simulations being recommended. A complete option list is given below. 
+The **seq\_file**, **loc\_file**, **lk\_file**, and **res\_file** are all derived from [**LDhat**](http://ldhat.sourceforge.net/), although the **seq\_file** is required to be phased and encoded using just zeros and ones. The --nsim parameter controls the number of simulations used within the method, with at least 1000 simulations being recommended. A complete option list is given below. 
 
 The **ldhot** program produces an output file of the form **\<output\_prefix\>.hotspots.txt**, which contains the details of the windows tested for the presence of a hotspot. 
 This file can be treated as the final output, or further summarized using the **ldhot\_summary** program. This is a simple program which combines windows called as significant by the main **ldhot** program. It is called as follows.
@@ -46,7 +46,7 @@ A more complete example of the usage of LDhat and LDhot, with both input and out
 The **ldhot** program takes the following parameters.
 
 ####Required Parameters:
-* --seq <filename> : Input LDhat-format sequence file.
+* --seq <filename> : Input LDhat-format sequence file. Required to be phased and encoded using zeros and ones only.
 * --loc <filename> : Input LDhat-format positions file.
 * --lk <filename>  : Input LDhat-format likelihood lookup file.
 * --res <filename> : Input recombination rate estimates in same format as LDhat 'stat' output.
