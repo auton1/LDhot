@@ -1,9 +1,9 @@
 LDhot
 =====
 
-A program to detect recombination hotspots using population genetic data.
+A program to detect recombination hotspots using population genetic data. [Citation](https://arxiv.org/pdf/1403.4264.pdf).
 
-##Installation
+## Installation
 
 After downloading, switch to the download folder and type:
 ```
@@ -18,7 +18,7 @@ make MULTI=1
 ```
 
 
-##Basic Usage
+## Basic Usage
 
 Two programs are provided. The main program is called as follows.
 
@@ -39,23 +39,23 @@ The output of this program can be found in **\<output\_prefix\>.hot\_summary.txt
 
 A more complete example of the usage of LDhat and LDhot, with both input and output files, can be found in the **example** folder.
 
-##Option List
+## Option List
 
-###ldhot
+### ldhot
 
 The **ldhot** program takes the following parameters.
 
-####Required Parameters:
+#### Required Parameters:
 * --seq <filename> : Input LDhat-format sequence file. Required to be phased and encoded using zeros and ones only.
 * --loc <filename> : Input LDhat-format positions file.
 * --lk <filename>  : Input LDhat-format likelihood lookup file.
 * --res <filename> : Input recombination rate estimates in same format as LDhat 'stat' output.
 
-####Important Parameters:
+#### Important Parameters:
 * --out <prefix>   : Prefix for output files (default: out).
 * --nsim <int>     : Maximum number of simulations to use (default: 100 but at least 1000 recommended).
 
-####Other Parameters:
+#### Other Parameters:
 * --startpos <double>   : Start position in kb.
 * --endpos <double>     : End position in kb.
 * --step <double>       : Step size (in kb) between tested windows (default: 1).
@@ -65,15 +65,15 @@ The **ldhot** program takes the following parameters.
 * --nofreqcond          : Turn off frequency conditioning.
 * --lk-SNP-window <int> : Number of SNPs over which to calculate the composite likelihood (default: 50).
 
-###ldhot_summary
+### ldhot_summary
 
 The **ldhot_summary** program takes the following parameters.
 
-####Required Parameters:
+#### Required Parameters:
 * --res <filename> : Input recombination rate estimates in same format as LDhat 'stat' output.
 * --hot <filename> : Input hotspot file from LDhot.
 
-####Other Parameters:
+#### Other Parameters:
 * --out <prefix>   : Prefix for output files (default: out).
 * --sig <double>      : Significance cutoff for calling a hotspot (default: 0.001).
 * --sigjoin <double>  : Significance cutoff for merging hotspot windows (default: 0.01).
